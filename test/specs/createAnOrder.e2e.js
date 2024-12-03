@@ -35,7 +35,10 @@ describe('Create an order', () => {
             await browser.url('/') 
             await page.fillAddresses('East 2nd Street, 601', '1300 1st St');
             const cardPayment = await $(page.Payment);
-            await expect cardPayment.click();
+            await cardPayment.click();
+            await except(cardPayment).toBeExisting();
+          })
+
 
 
 
