@@ -15,5 +15,3 @@ Running Tests:
 2. Clone the repository and navigate to the project directory.
 3. Run npm install to install dependencies.
 4. Run npm test to execute the tests.
-
-(I am not getting the help that I need from tutors, and this is really stressing me out. I feel like I don't know what I'm doing.)
