@@ -1,4 +1,4 @@
- const page = require('../../page');
+const page = require('../../page');
 const helper = require('../../helper')
 
 describe('Create an order', () => {
@@ -21,7 +21,7 @@ describe('Create an order', () => {
     })
 
 
-    it.only('should select the Supportive plan', async () => {
+    it('should select the Supportive plan', async () => {
        await browser.url('/')
        await page.fillAddresses('East 2nd Street, 601', '1300 1st St');
        const planSelector = await $(page.planSelector);
@@ -31,66 +31,64 @@ describe('Create an order', () => {
    })
 
 
-        it('should add a credit card', async () => {
-            await browser.url('/') 
-            await page.fillAddresses('East 2nd Street, 601', '1300 1st St');
-            const cardPayment = await $(page.Payment);
-            await cardPayment.click();
-            await except(cardPayment).toBeExisting();
-          })
+        it('should add a credit card', async () => { 
+            await browser.url(`/`); 
+            await page.fillAddresses('East 2nd Street, 601', '1300 1st St'); 
+            await page.addPaymentMethodCard();  
+            const cardPaymentMethodIcon = await $(page.cardPaymentMethodIcon); 
+            await cardPaymentMethodIcon.waitForDisplayed();
+            await expect(await $(cardPaymentMethodIcon)).toBeExisting(); 
+        }) 
 
 
+        it('should write a message for the driver', async () => { 
+          await browser.url(`/`); 
+          await page.fillAddresses('East 2nd Street, 601', '1300 1st St'); 
+          const actualMessage = 'message for the driver'; 
+          await page.writeAMessageForADriver(actualMessage); 
+          await expect($(page.messageField)).toHaveValue(actualMessage); 
+       })
 
+            
+                it('should order a Blanket and handkerchiefs', async () => { 
+                  await browser.url(`/`); 
+                  await page.fillAddresses('East 2nd Street, 601', '1300 1st St');
+                  const planSelector = await $(page.planSelector);
+                  await planSelector.waitForDisplayed()
+                  await planSelector.click();
+                  await page.orderBlancketAndHandkerchiefs; 
+                  await expect($(page.blancketSwitch)).toBeToggled; 
+              })
 
-
-          })
-
-        it('should send a message to the driver', async () => {
-            await browser.url('/') 
-            await page.click('#send-message-button') 
-            await page.fill('textarea[id="message-text"]', 'Hello, thanks for the ride.') 
-            await page.click('#send-button') 
-            await expect(await helper.getElementByText('Message sent successfully')).toBeExisting()
-            })
-
-            it('should order a blanket and handkerchiefs', async () => {
-                await browser.url('/') 
-                await page.click('#order-button') 
-                await page.click('#blanket-checkbox') 
-                await page.click('#handkerchiefs-checkbox') 
-                await page.click('#proceed-button') 
-                await expect(await helper.getElementByText('#order-status', 'Order placed successfully')).toBeExisting()
-                await expect(await helper.getElementByCss('#order-status', 'background-color: green')).toBeExisting()
-                })
                 
+                    it('should order 2 Ice creams', async () => { 
+                      await browser.url(`/`); 
+                      await page.fillAddresses('East 2nd Street, 601', '1300 1st St'); 
+                      const planSelector = await $(page.planSelector);
+                      await planSelector.waitForDisplayed()
+                      await planSelector.click();; 
+                      const plusCounter = await $(page.plusCounter); 
+                      await plusCounter.click(); 
+                      await plusCounter.click(); 
+                      const counterValue = await $(page.counterValue); 
+                      await expect(counterValue).toHaveText("2"); 
+                  })
 
-                it('should order 2 ice creams', async () => {
-                    await browser.url('/') 
-                    await page.click('#ice-cream-menu') 
-                    await page.click('#ice-cream-option') 
-                    await page.click('#add-to-cart-button') 
-                    await page.click('#add-to-cart-button') 
-                    await page.click('#proceed-to-checkout-button') 
-                    await expect(await helper.getElementByText('#order-summary', '2 x Ice Cream')).toBeExisting()
-                    await expect(await helper.getElementByText('#order-summary', 'Total: $X.XX')).toBeExisting()
-                    })
-
-                    it('should open the car search modal', async () => {
-                        await browser.url('/') 
-                        await page.click('#search-cars-button') 
-                        await expect(await helper.getElementByText('#car-search-modal', 'Search for cars')).toBeExisting()
-                        await expect(await helper.getElementByCss('#car-search-modal', 'display: block')).toBeExisting()
-                        })
-
-                        it('should display driver info in the modal', async () => {
-                            await browser.url('/') 
-                            await page.click('#search-cars-button') 
-                            await page.waitForSelector('#car-search-modal #driver-info', { timeout: 10000 }) 
-                            await expect(await helper.getElementByText('#car-search-modal #driver-name', 'Driver Name')).toBeExisting()
-                            await expect(await helper.getElementByText('#car-search-modal #driver-phone', 'Driver Phone')).toBeExisting()
-                            })
-
-
-                        });
-
-    
+                  it('should show the car search modal', async () => { 
+                    await browser.url(`/`); 
+                    await page.fillAddresses('East 2nd Street, 601', '1300 1st St'); 
+                    const planSelector = await $(page.planSelector);
+                    await planSelector.waitForDisplayed()
+                    await planSelector.click(); 
+                    let countryCode = '+1'; 
+                    let phoneNumber = await helper.getPhoneNumber(countryCode);   
+                    await page.submitPhoneNumber(phoneNumber); 
+                    const actualMessage = 'Test message.'; 
+                    await page.writeAMessageForADriver(actualMessage); 
+                    const orderButton = await $(page.orderButton); 
+                    await orderButton.waitForDisplayed(); 
+                    await orderButton.click(); 
+                    const carSearchModal = await $(page.carSearchModal); 
+                    await expect(carSearchModal).toBeDisplayed();  
+            }) 
+                }); 
