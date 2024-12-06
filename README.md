@@ -15,3 +15,4 @@ Running Tests:
 2. Clone the repository and navigate to the project directory.
 3. Run npm install to install dependencies.
 4. Run npm test to execute the tests.
+Run tests with npm run wdio
